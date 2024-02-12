@@ -1,9 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class RadialVortex : VortexType
 {
     public float Radius;
-    public float FallOff;
     
     /// <summary>
     /// 
@@ -32,5 +32,10 @@ public class RadialVortex : VortexType
 
         // Calculate the strength using the inverse square law
         return Mathf.Pow(1 - distance / (Radius * Radius), FallOff);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawWireSphere(transform.position, Radius);
     }
 }

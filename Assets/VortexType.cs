@@ -4,7 +4,8 @@ using UnityEngine;
 public class VortexType : MonoBehaviour
 {
     public Vector2 VortexCenter;
-
+    public float FallOff;
+    
     public void Update()
     {
         VortexCenter.x = transform.position.x;

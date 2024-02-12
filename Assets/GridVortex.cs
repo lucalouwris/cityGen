@@ -4,11 +4,11 @@ using UnityEngine;
 public class GridVortex : VortexType
 {
     public Vector2Int VortexSize = Vector2Int.one * 2;
-    //public float rotation;
+    public Vector3 rotation;
     public override Vector3 CalculateVortex(Vector2 position)
     {
         if(InBounds(position))
-            return transform.forward;
+            return rotation;
         return Vector3.zero;
     }
     private bool InBounds(Vector2 position)

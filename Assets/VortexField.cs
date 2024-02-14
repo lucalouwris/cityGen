@@ -31,7 +31,7 @@ public class VortexField : MonoBehaviour
             foreach (VortexType vortex in AllTypes)
             {
                 Vector3 vortexData = vortex.CalculateVortex(CurrentPos);
-                if (vortexData.z <= 0) continue;
+                if (vortexData.z == 0) continue;
                 Vector2 direction = Vector2.zero;
                 direction.x = vortexData.x;
                 direction.y = vortexData.y;
@@ -54,9 +54,14 @@ public class VortexField : MonoBehaviour
             if (vertex == Vector2.zero)
             {
                 Gizmos.color = Color.blue;
-                vertex = Vector2.up * .5f;
+                vertex = Vector2.up * .5f;            
+                Gizmos.DrawLine((Vector2)pos * scale, ((Vector2)pos * scale) + vertex); 
+                continue;
             }
             Gizmos.DrawLine((Vector2)pos * scale, ((Vector2)pos * scale) + vertex);
+            vertex = new Vector2(-vertex.y, vertex.x);
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine((Vector2)pos * scale, ((Vector2)pos * scale) + vertex / 2);
         }
     }
     

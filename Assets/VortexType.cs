@@ -4,9 +4,9 @@ using UnityEngine;
 public class VortexType : MonoBehaviour
 {
     public Vector2 VortexCenter;
+    [Range(0.0f, 8f)]
     public float FallOff;
     public float Radius = 20f;
-    public AnimationCurve fallOffCurve = AnimationCurve.EaseInOut(0,.5f,1,1);
     
     internal virtual void Update()
     {
@@ -21,13 +21,15 @@ public class VortexType : MonoBehaviour
         return Vector3.zero;
     }
 
-    internal virtual float CalculateStrength(float distance)
+    internal virtual float CalculateStrength(float sqrDistance)
     {
-        // If the distance is greater than the radius, return zero strength
-        if (distance > Radius * Radius)
+        // If the sqrDistance is greater than the radius, return zero strength
+        if (sqrDistance > Radius * Radius)
+        {
             return 0f;
+        }
 
         // Calculate the strength using the inverse square law
-        return fallOffCurve.Evaluate(Mathf.Pow(1 - distance / (Radius * Radius), FallOff));
+        return Mathf.Pow(1-(sqrDistance/(Radius*Radius)),FallOff); //(FallOff * (1 - sqrDistance / Radius));
     }
 }

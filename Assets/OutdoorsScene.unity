@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 2157.8645, g: 2262.8694, b: 3289.6763, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -447,15 +447,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81bf4aecc7e14e4abb259bacc4ba6412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VortexCenter: {x: 2.04, y: -0.83}
-  FallOff: 2
-  Radius: 10
+  VortexCenter: {x: 0, y: 0}
+  FallOff: 1
+  Radius: 20
   fallOffCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.5
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -720,14 +720,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VortexCenter: {x: 40.814495, y: 32.35536}
-  FallOff: 1
+  FallOff: 0
   Radius: 5
   fallOffCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.5
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -901,13 +901,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1647667722}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 25, y: 25, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!1 &1719113925
 GameObject:
   m_ObjectHideFlags: 0
@@ -952,15 +952,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81bf4aecc7e14e4abb259bacc4ba6412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  VortexCenter: {x: 2.04, y: -0.83}
+  VortexCenter: {x: 0, y: 0}
   FallOff: 1
-  Radius: 10
+  Radius: 20
   fallOffCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.5
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1278,7 +1278,7 @@ Transform:
   m_GameObject: {fileID: 2138018245}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.2, y: 6.4, z: -1.57}
+  m_LocalPosition: {x: 7.4, y: 8.38, z: -1.57}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1297,14 +1297,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   VortexCenter: {x: 0, y: 0}
-  FallOff: 0
-  Radius: 13
+  FallOff: 1
+  Radius: 20
   fallOffCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 0.5
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1323,8 +1323,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  VortexSize: {x: 13, y: 11}
-  rotation: {x: 0.95, y: 0.47, z: 0}
+  VortexSize: {x: 14, y: 16}
+  rotation: {x: 0.48, y: 0.15, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

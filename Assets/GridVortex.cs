@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GridVortex : VortexType
 {
@@ -7,10 +6,13 @@ public class GridVortex : VortexType
     public Vector3 rotation;
     public override Vector3 CalculateVortex(Vector2 position)
     {
-        if(InBounds(position))
-            return rotation;
-        return Vector3.zero;
+        if (!InBounds(position))
+            return Vector3.zero;
+        Vector2 difference = position - VortexCenter;
+        rotation.z = CalculateStrength(Vector2.SqrMagnitude(difference));
+        return rotation;
     }
+    
     private bool InBounds(Vector2 position)
     {
         if (VortexCenter.x - VortexSize.x / 2f < position.x &&
@@ -18,7 +20,6 @@ public class GridVortex : VortexType
             VortexCenter.x + VortexSize.x / 2f > position.x &&
             VortexCenter.y + VortexSize.y / 2f > position.y)
         {
-            Debug.Log("Is in bounds");
             return true;
         }
         return false;

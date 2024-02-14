@@ -10,6 +10,8 @@ public class VortexField : MonoBehaviour
     public Vector2Int CurrentPos;
     public Vector2[] Field;
     public Vector2Int GridSize = Vector2Int.one * 2;
+
+    public float scale;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,9 +33,9 @@ public class VortexField : MonoBehaviour
                 Vector3 vortexData = vortex.CalculateVortex(CurrentPos);
                 if (vortexData.z <= 0) continue;
                 Vector2 direction = Vector2.zero;
-                direction.x = vortexData.x * vortexData.z;
-                direction.y = vortexData.y * vortexData.z;
-                directionList.Add(direction);
+                direction.x = vortexData.x;
+                direction.y = vortexData.y;
+                directionList.Add(direction * vortexData.z);
             }
 
             Field[index] = CombineDirections(directionList.ToArray());
@@ -45,10 +47,16 @@ public class VortexField : MonoBehaviour
         Vector2Int pos = Vector2Int.zero;
         for (int index = 0; index < Field.Length; index++)
         {
+            Gizmos.color = Color.white;
             pos.x = index % GridSize.x;
             pos.y = index / GridSize.y;
             Vector2 vertex = Field[index];
-            Gizmos.DrawLine((Vector2)pos, pos + Field[index]);
+            if (vertex == Vector2.zero)
+            {
+                Gizmos.color = Color.blue;
+                vertex = Vector2.up * .5f;
+            }
+            Gizmos.DrawLine((Vector2)pos * scale, ((Vector2)pos * scale) + vertex);
         }
     }
     

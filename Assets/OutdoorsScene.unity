@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2163.539, g: 2273.0896, b: 3316.183, a: 1}
+  m_IndirectSpecularColor: {r: 2156.684, g: 2261.4485, b: 3286.164, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -463,13 +463,14 @@ GameObject:
   m_Component:
   - component: {fileID: 839185525}
   - component: {fileID: 839185526}
+  - component: {fileID: 839185527}
   m_Layer: 0
   m_Name: Spline
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &839185525
 Transform:
   m_ObjectHideFlags: 0
@@ -685,6 +686,24 @@ MonoBehaviour:
       m_Data: []
   m_Knots:
     m_KnotsLink: []
+--- !u!114 &839185527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 839185524}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 40f23274df394008bb73db4f64803e40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  center:
+    x: 40.814495
+    y: 32.35536
+  fallOff: 1.28
+  multiplier: 0.5
+  radius: 5
 --- !u!1 &1141083190
 GameObject:
   m_ObjectHideFlags: 0
@@ -738,7 +757,7 @@ MonoBehaviour:
   gridSize:
     x: 50
     y: 50
-  scale: 5
+  scale: 1
 --- !u!1 &1647667722
 GameObject:
   m_ObjectHideFlags: 0

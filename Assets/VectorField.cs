@@ -1,88 +1,107 @@
 using System;
 using System.Collections.Generic;
-using Unity.Burst;
+using System.Reflection;
+using System.Reflection.Emit;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Splines;
 
 public class VectorField : MonoBehaviour
 {
-    public VectorType[] allTypes;
-    public NativeArray<float4> field;
+    private VectorType[] activeFields;
+    private VectorValues[] allTypes;
+    public float4[] result;
     public int2 gridSize;
     public float scale = 1f;
-    
     private int2 _currentPos;
 
     private void Start()
     {
-        field = new NativeArray<float4>(gridSize.x * gridSize.y, Allocator.Persistent);
-        allTypes = GetComponentsInChildren<VectorType>();
-    }
-
-    private void OnDestroy()
-    {
-        field.Dispose();
+        activeFields = GetComponentsInChildren<VectorType>();
+        allTypes = new VectorValues[activeFields.Length];
     }
 
     private void Update()
     {
-        ProcessArrayJob job = new ProcessArrayJob
+        JobUpdate();
+    }
+
+    private void JobUpdate()
+    {
+        NativeArray<float4> field = new NativeArray<float4>(gridSize.x * gridSize.y, Allocator.Persistent);
+
+        CalculateField job = new CalculateField
         {
             dataArray = field,
             gridSize = gridSize,
-            size = gridSize,
-            rotation = new float2(.3f, .4f),
-            center = gridSize/2,
-            fallOff = 1,
-            multiplier = 1
         };
+        
+        for (int i = 0; i < activeFields.Length; i++)
+        {
+            switch (activeFields[i])
+            {
+                case GridVector gridVector:
+                    FillValues(i);
+                    FillGridValues(i);
+                    break;
+                case RadialVector radialVector:
+                    FillRadialValues(i);
+                    break;
+                case SplineVector splineVector:
+                    FillSplineValues(i);
+                    break;
+                default:
+                    continue;
+            }
+        }
+        
+        
         JobHandle handle = job.Schedule(gridSize.x * gridSize.y, 32);
         handle.Complete();
-        // float4[] directionList = new float4[allTypes.Length];
-        // for (int index = 0; index < field.Length; index++)
-        // {
-        //     _currentPos.x = index % gridSize.x;
-        //     _currentPos.y = index / gridSize.y;
-        //     for (var i = 0; i < allTypes.Length; i++)
-        //     {
-        //         float4 vectorData = allTypes[i].CalculateVortex(_currentPos, out float vectorStrength);
-        //         if (vectorStrength == 0)
-        //         {
-        //             directionList[i] = float4.zero;
-        //             continue;
-        //         }
-        //         vectorData *= vectorStrength;
-        //         directionList[i] = vectorData;
-        //     }
-        //     field[index] = CombineDirections(directionList);
-        // }
+
+        result = field.ToArray();
+        field.Dispose();
     }
 
-    private float4 CombineDirections(float4[] directionList)
+    private void FillValues(int i)
     {
-        float4 combinedDirection = default;
-        for (int i = 0; i < directionList.Length; i++)
-        {
-            combinedDirection += directionList[i];
-        }
-
-        combinedDirection.xy = math.normalize(combinedDirection.xy);
-        combinedDirection.zw = math.normalize(combinedDirection.zw);
-        return combinedDirection;
+        allTypes[i].center = activeFields[i].center;
+        allTypes[i].fallOff = activeFields[i].fallOff;
+        allTypes[i].multiplier = activeFields[i].multiplier;
     }
-    
+
+    private void FillGridValues(int i)
+    {
+        allTypes[i].type = VectorTypes.Grid;
+        allTypes[i].size = ((GridVector)activeFields[i]).size;
+        allTypes[i].rotation = ((GridVector)activeFields[i]).rotation;
+    }
+
+    private void FillSplineValues(int i)
+    {
+        allTypes[i].type = VectorTypes.Spline;
+        allTypes[i].spline = ((SplineVector)activeFields[i]).mainSpline;
+        allTypes[i].radius = ((SplineVector)activeFields[i]).radius;
+    }
+
+    private void FillRadialValues(int i)
+    {
+        allTypes[i].type = VectorTypes.Radial;
+        allTypes[i].radius = ((RadialVector) activeFields[i]).radius;
+    }
+
     private void OnDrawGizmos()
     {
         float2 pos = default;
-        for (int index = 0; index < field.Length; index++)
+        for (int index = 0; index < result.Length; index++)
         {
             Gizmos.color = Color.white;
             pos.x = index % gridSize.x;
             pos.y = index / gridSize.y;
-            float4 vector = field[index];
+            float4 vector = result[index];
             float2 direction = default;
             if (vector.Equals(float4.zero))
             {
@@ -98,82 +117,32 @@ public class VectorField : MonoBehaviour
             Gizmos.DrawLine((Vector2) pos*scale, (Vector2)(pos * scale) + (Vector2) direction); 
         }
     }
+}
+
+[Serializable]
+public struct VectorValues
+{
+    public VectorTypes type;
+    public float2 center;
+    [Range(0.0f, 3f)]
+    public float fallOff;
+    public float multiplier;
     
-    [BurstCompile]
-    struct ProcessArrayJob : IJobParallelFor
-    {
-        public NativeArray<float4> dataArray;
-        public int2 gridSize;
-        public int2 _currentPos;
-        public float2 size;
-        public float2 rotation; 
-        public float2 center;
-        public float fallOff;
-        public float multiplier;
-        public void Execute(int index)
-        {
-            _currentPos.x = index % gridSize.x;
-            _currentPos.y = index / gridSize.y;
-            
-            float4 vectorData = CalculateVortex(_currentPos, out float vectorStrength);
-            if (vectorStrength == 0)
-            {
-                return;
-            }
-            vectorData *= vectorStrength;
-
-            dataArray[index] = vectorData;
-        }
-        
-        public float4 CalculateVortex(float2 position, out float strength)
-        {
-            if(!InBounds(position))
-            {
-                strength = 0;
-                return float4.zero;
-            }
-        
-            // Calculate direction for major
-            float2 majorDirection = math.normalize(rotation);
-            // Calculate direction for minor
-            float2 minorDirection = new float2(-majorDirection.y, majorDirection.x);
-        
-            // Calculate strength based on distance to center and fallout
-            strength = CalculateStrength(position);
-            return new float4(majorDirection, minorDirection);
-        }
-
-        /// <summary>
-        /// This calculates the strength of the vector, running a distance check to each border and calculating the percentage from the center
-        /// </summary>
-        /// <param name="sqrDistance"></param>
-        /// <returns></returns>
-        internal float CalculateStrength(float2 position)
-        {
-            float2 corner = new float2(center.x + size.x / 2, center.y + size.y / 2);
-            // Calculate distance to center
-            float sqrDistance = math.distancesq(position, center);
-            float sqrDistanceCorner = math.distancesq(corner, center);
-            // If the sqrDistance is greater than the radius, return zero strength
-            if (sqrDistance > sqrDistanceCorner)
-            {
-                return 0f;
-            }
-
-            // Calculate the strength using the inverse square law
-            return Mathf.Pow(1-(sqrDistance/(sqrDistanceCorner)),fallOff) * multiplier;
-        }
+    // Grid info
+    public float2 size;
+    public float2 rotation;
     
-        private bool InBounds(float2 position)
-        {
-            if (center.x - size.x / 2f < position.x &&
-                center.y - size.y / 2f < position.y &&
-                center.x + size.x / 2f > position.x &&
-                center.y + size.y / 2f > position.y)
-            {
-                return true;
-            }
-            return false;
-        }
-    }
+    // Spline info
+    public Spline spline;
+    
+    // Radial and spline info
+    public float radius;
+}
+
+public enum VectorTypes
+{
+    Basic,
+    Grid,
+    Radial,
+    Spline
 }

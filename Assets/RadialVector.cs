@@ -1,3 +1,4 @@
+using System;
 using Unity.Mathematics;
 using UnityEngine;
 
@@ -35,5 +36,10 @@ public class RadialVector : VectorType
 
         // Calculate the strength using the inverse square law
         return Mathf.Pow(1-(sqrDistance/(radius*radius)),fallOff) * multiplier;
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(transform.position, radius);
     }
 }

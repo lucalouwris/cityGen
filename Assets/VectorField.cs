@@ -14,17 +14,18 @@ public class VectorField : MonoBehaviour
 
     private void Start()
     {
-        field = new float4[gridSize.x * gridSize.y];
         allTypes = GetComponentsInChildren<VectorType>();
     }
 
-    private void Update()
+    private void OnValidate()
     {
+        field = new float4[gridSize.x * gridSize.y];
+        
         float4[] directionList = new float4[allTypes.Length];
         for (int index = 0; index < field.Length; index++)
         {
             _currentPos.x = index % gridSize.x;
-            _currentPos.y = index / gridSize.y;
+            _currentPos.y = index / gridSize.x;
             for (var i = 0; i < allTypes.Length; i++)
             {
                 float4 vectorData = allTypes[i].CalculateVortex(_currentPos, out float vectorStrength);
@@ -60,7 +61,7 @@ public class VectorField : MonoBehaviour
         {
             Gizmos.color = Color.white;
             pos.x = index % gridSize.x;
-            pos.y = index / gridSize.y;
+            pos.y = index / gridSize.x;
             float4 vector = field[index];
             float2 direction = default;
             if (vector.Equals(float4.zero))

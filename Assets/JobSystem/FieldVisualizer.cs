@@ -22,7 +22,7 @@ public class FieldVisualizer : MonoBehaviour
             new NativeArray<float4>(visualField.Length, Allocator.Temp);
         
         
-        CalculateVisual job = new CalculateVisual
+        CalculateFieldFromPosition job = new CalculateFieldFromPosition
         {
             dataArray = field,
             gridSize = gridSize,

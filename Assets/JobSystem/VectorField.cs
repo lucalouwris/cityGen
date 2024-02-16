@@ -9,4 +9,6 @@ public struct VectorField
     public float radius;
     public float2 dimensions;
     public float fallOff;
+    public float2 rotation;
+    public float multiplier;
 }

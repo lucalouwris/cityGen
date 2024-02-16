@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class VectorField : MonoBehaviour
+public class VectorVisualization : MonoBehaviour
 {
     public VectorType[] allTypes;
     public float4[] field;
     public int2 gridSize;
-    public float scale = 1f;
+    public float resolution = 1f;
     
-    private int2 _currentPos;
+    private float2 _currentPos;
 
     private void Start()
     {
@@ -19,13 +19,13 @@ public class VectorField : MonoBehaviour
 
     private void OnValidate()
     {
-        field = new float4[gridSize.x * gridSize.y];
+        field = new float4[(int)(gridSize.x * gridSize.y / resolution )];
         
         float4[] directionList = new float4[allTypes.Length];
         for (int index = 0; index < field.Length; index++)
         {
-            _currentPos.x = index % gridSize.x;
-            _currentPos.y = index / gridSize.x;
+            _currentPos.x = (index % gridSize.x) * resolution;
+            _currentPos.y = (index / gridSize.x) * resolution;
             for (var i = 0; i < allTypes.Length; i++)
             {
                 float4 vectorData = allTypes[i].CalculateVortex(_currentPos, out float vectorStrength);
@@ -60,22 +60,22 @@ public class VectorField : MonoBehaviour
         for (int index = 0; index < field.Length; index++)
         {
             Gizmos.color = Color.white;
-            pos.x = index % gridSize.x;
-            pos.y = index / gridSize.x;
+            pos.x = (index % gridSize.x) * resolution;
+            pos.y = (index / gridSize.x) * resolution;
             float4 vector = field[index];
             float2 direction = default;
             if (vector.Equals(float4.zero))
             {
                 Gizmos.color = Color.blue;
                 direction = new float2(vector.x, vector.y);
-                Gizmos.DrawLine((Vector2) pos*scale, (Vector2)(pos * scale) + (Vector2) direction); 
+                Gizmos.DrawLine((Vector2) pos, (Vector2)(pos) + (Vector2) direction); 
                 continue;
             }
             direction = new float2(vector.x, vector.y);
-            Gizmos.DrawLine((Vector2) pos*scale, (Vector2)(pos * scale) + (Vector2) direction); 
+            Gizmos.DrawLine((Vector2) pos, (Vector2)(pos) + (Vector2) direction); 
             Gizmos.color = Color.red;
             direction = new float2(vector.z, vector.w);
-            Gizmos.DrawLine((Vector2) pos*scale, (Vector2)(pos * scale) + (Vector2) direction); 
+            Gizmos.DrawLine((Vector2) pos, (Vector2)(pos) + (Vector2) direction); 
         }
     }
 }

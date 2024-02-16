@@ -8,11 +8,11 @@ using Unity.Mathematics;
 public struct CalculateFieldFromPosition : IJobParallelFor
 {
     [ReadOnly]
-    public NativeArray<VectorField> _fields;
+    public NativeArray<VectorField> fields;
     // Jobs declare all data that will be accessed in the job
     // By declaring it as read only, multiple jobs are allowed to access the data in parallel
     [ReadOnly]
-    public NativeArray<float2> postions;
+    public NativeArray<float2> positions;
 
     // By default containers are assumed to be read & write
     public NativeArray<float4> result;
@@ -24,43 +24,60 @@ public struct CalculateFieldFromPosition : IJobParallelFor
     
     public float4 CalculateDirection(int posIndex)
     {
-        float4 TotalDirection = float4.zero;
-        for (var fieldIndex = 0; fieldIndex < _fields.Length; fieldIndex++)
+        float4 totalDirection = float4.zero;
+        
+        for (var fieldIndex = 0; fieldIndex < fields.Length; fieldIndex++)
         { 
             if (!InBounds())
                 continue;
-            switch (_fields[fieldIndex].type)
+            switch (fields[fieldIndex].type)
             {
                 case VectorTypes.Grid:
-                    TotalDirection += CalculateGridDirection(fieldIndex, posIndex);
+                    totalDirection += CalculateGridDirection(fieldIndex, posIndex);
                     break;
                 case VectorTypes.Radial:
+                    totalDirection += CalculateRadialDirection(fieldIndex, posIndex);
                     break;
                 case VectorTypes.Spline:
                     break;
             }
         }
 
-        TotalDirection.xy = math.normalize(TotalDirection.xy);
-        TotalDirection.zw = math.normalize(TotalDirection.zw);
-        return TotalDirection;
+        totalDirection.xy = math.normalize(totalDirection.xy);
+        totalDirection.zw = math.normalize(totalDirection.zw);
+        return totalDirection;
+    }
+
+    private float4 CalculateRadialDirection(int fieldIndex, int posIndex)
+    {
+        // Calculate direction for major
+        float2 majorDirection = math.normalize(fields[fieldIndex].center - positions[posIndex]);
+        
+        // Calculate direction for minor
+        float2 minorDirection = new float2(-majorDirection.y, majorDirection.x);
+        
+        float strength = CalculateStrength(fieldIndex, posIndex );
+        return new float4(majorDirection * strength, minorDirection * strength);
     }
 
     private float4 CalculateGridDirection(int fieldIndex, int posIndex)
     {
         // Calculate direction for major
-        float2 majorDirection = math.normalize(_fields[fieldIndex].rotation);
+        float2 majorDirection = math.normalize(fields[fieldIndex].rotation);
+        
         // Calculate direction for minor
         float2 minorDirection = new float2(-majorDirection.y, majorDirection.x);
+        
         float strength = CalculateStrength(fieldIndex, posIndex );
-        return new float4(majorDirection, minorDirection) * strength;
+        return new float4(majorDirection * strength, minorDirection * strength);
     }
 
     private float CalculateStrength(int fieldIndex, int posIndex)
     {
         // Calculate distance to center
-        float sqrDistance = math.distancesq( postions[posIndex], _fields[fieldIndex].center);
-        float radius = _fields[fieldIndex].radius;
+        float sqrDistance = math.distancesq( positions[posIndex], fields[fieldIndex].center);
+        float radius = fields[fieldIndex].radius;
+        
         // If the sqrDistance is greater than the radius, return zero strength
         if (sqrDistance > radius * radius)
         {
@@ -68,7 +85,7 @@ public struct CalculateFieldFromPosition : IJobParallelFor
         }
 
         // Calculate the strength using the inverse square law
-        return math.pow(1-sqrDistance/(radius*radius),_fields[fieldIndex].fallOff) * _fields[fieldIndex].multiplier;
+        return math.pow(1-sqrDistance/(radius*radius),fields[fieldIndex].fallOff) * fields[fieldIndex].multiplier;
     }
 
     private bool InBounds()

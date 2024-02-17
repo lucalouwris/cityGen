@@ -90,6 +90,6 @@ public struct CalculateFieldFromPosition : IJobParallelFor
 
     private bool InBounds()
     {
-        return false;
+        return true;
     }
 }

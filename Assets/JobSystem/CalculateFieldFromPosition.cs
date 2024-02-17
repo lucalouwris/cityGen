@@ -28,7 +28,7 @@ public struct CalculateFieldFromPosition : IJobParallelFor
         
         for (var fieldIndex = 0; fieldIndex < fields.Length; fieldIndex++)
         { 
-            if (!InBounds())
+            if (!InBounds(fieldIndex, posIndex))
                 continue;
             switch (fields[fieldIndex].type)
             {
@@ -88,8 +88,14 @@ public struct CalculateFieldFromPosition : IJobParallelFor
         return math.pow(1-sqrDistance/(radius*radius),fields[fieldIndex].fallOff) * fields[fieldIndex].multiplier;
     }
 
-    private bool InBounds()
+    private bool InBounds(int fieldIndex, int posIndex)
     {
-        return true;
+        // Calculate the minimum and maximum boundaries
+        float2 minBound = fields[fieldIndex].center - fields[fieldIndex].dimensions / 2;
+        float2 maxBound = fields[fieldIndex].center + fields[fieldIndex].dimensions / 2;
+
+        // Check if the position is within the boundaries
+        return  positions[posIndex].x >= minBound.x &&  positions[posIndex].x <= maxBound.x &&
+                positions[posIndex].y >= minBound.y &&  positions[posIndex].y <= maxBound.y;
     }
 }

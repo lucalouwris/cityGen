@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2168.4739, g: 2282.043, b: 3340.157, a: 1}
+  m_IndirectSpecularColor: {r: 2182.3528, g: 2327.3948, b: 3494.0044, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -450,11 +450,11 @@ MonoBehaviour:
   fieldTypes:
   - type: 2
     center:
-      x: 47.27
-      y: 35.73
+      x: 84.514175
+      y: 973.80896
     fallOff: 1.55
     multiplier: 1
-    radius: 50
+    radius: 603.6721
     dimensions:
       x: 5
       y: 5
@@ -463,11 +463,24 @@ MonoBehaviour:
       y: 0.6
   - type: 1
     center:
-      x: 125
-      y: 100
+      x: 656.40564
+      y: 472.20444
     fallOff: 1.62
     multiplier: 0.2
     radius: 230
+    dimensions:
+      x: 424.73352
+      y: 432.23892
+    rotation:
+      x: 0.3
+      y: 0.6
+  - type: 2
+    center:
+      x: 808.04004
+      y: 743.9938
+    fallOff: 3
+    multiplier: 1
+    radius: 125.882416
     dimensions:
       x: 250
       y: 200
@@ -476,11 +489,11 @@ MonoBehaviour:
       y: 0.6
   - type: 2
     center:
-      x: 100
-      y: 100
-    fallOff: 3
+      x: 897.2494
+      y: 321.88077
+    fallOff: 0.73
     multiplier: 1
-    radius: 75
+    radius: 241.20197
     dimensions:
       x: 250
       y: 200
@@ -489,20 +502,33 @@ MonoBehaviour:
       y: 0.6
   - type: 1
     center:
-      x: 189.5
-      y: 100
+      x: 880.5889
+      y: 619.6557
     fallOff: 3
     multiplier: 1
     radius: 75
     dimensions:
-      x: 100
-      y: 100
+      x: 280.50757
+      y: 234.8081
     rotation:
       x: 0.5
       y: 0.2
+  - type: 1
+    center:
+      x: 191.0593
+      y: 429.8689
+    fallOff: 3
+    multiplier: 1
+    radius: 75
+    dimensions:
+      x: 357.0972
+      y: 542.11786
+    rotation:
+      x: 1
+      y: 0.2
   dimensions:
-    x: 250
-    y: 200
+    x: 1140.2538
+    y: 1097.8516
   resolution: 2
 --- !u!1 &1647667722
 GameObject:

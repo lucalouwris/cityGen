@@ -9,8 +9,7 @@ public class FieldVisualizer : MonoBehaviour
 {
     public VectorField[] fieldTypes;
 
-    [SerializeField]
-    private float2 dimensions = new(1f,1f);
+    [SerializeField] public float2 dimensions = new(1f,1f);
     [SerializeField, Min(1)]
     private float resolution;
 

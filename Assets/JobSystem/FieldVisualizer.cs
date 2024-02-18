@@ -4,6 +4,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Mathematics;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class FieldVisualizer : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class FieldVisualizer : MonoBehaviour
 
     private NativeArray<float4> _fieldDirections;
     private NativeArray<float2> _fieldPositions;
+
+    public UnityEvent generationCompleted;
 
     private void OnValidate()
     {
@@ -45,6 +48,11 @@ public class FieldVisualizer : MonoBehaviour
         
         tempFieldTypes.Dispose();
         _fieldDirections = job.result;
+
+        if (generationCompleted == null)
+        {
+            generationCompleted = new UnityEvent();
+        }
     }
 
     private void ValidateFieldTypes()

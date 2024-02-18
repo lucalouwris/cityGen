@@ -7,8 +7,7 @@ using UnityEngine;
 
 public class FieldVisualizer : MonoBehaviour
 {
-    [SerializeField]
-    private VectorField[] fieldTypes;
+    public VectorField[] fieldTypes;
 
     [SerializeField]
     private float2 dimensions = new(1f,1f);

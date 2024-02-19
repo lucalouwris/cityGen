@@ -10,12 +10,12 @@ public class FieldVisualizer : MonoBehaviour
 {
     public VectorField[] fieldTypes;
 
-    [SerializeField] public float2 dimensions = new(1f,1f);
-    [SerializeField, Min(1)]
-    private float resolution;
+    public float2 dimensions = new(1f,1f);
+    [Min(1)]
+    public float resolution;
 
-    private NativeArray<float4> _fieldDirections;
-    private NativeArray<float2> _fieldPositions;
+    public NativeArray<float4> _fieldDirections;
+    public NativeArray<float2> _fieldPositions;
 
     public UnityEvent generationCompleted;
 
@@ -53,6 +53,7 @@ public class FieldVisualizer : MonoBehaviour
         {
             generationCompleted = new UnityEvent();
         }
+        generationCompleted.Invoke();
     }
 
     private void ValidateFieldTypes()

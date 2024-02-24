@@ -55,12 +55,13 @@ public class RoadGenerator : MonoBehaviour
             _fieldPositionIndex.Dispose();
     }
 
+    [ContextMenu("Add next step")]
     private void Update()
-    {
-        if(maxItterations > currentItteration)
+    { 
+        if(roadComplete)
+            return;
+        if(currentItteration > maxItterations)
         {
-            if(roadComplete)
-                return;
             roadComplete = true;
             MergeSplines();
         }
@@ -69,13 +70,21 @@ public class RoadGenerator : MonoBehaviour
         // Add points to spline
         for (int i = 0; i < _fieldPositionIndex.Length; i++)
         {
-            
+            float3 tangent = new float3(_visualizer._fieldDirections[_fieldPositionIndex[i]].xy,0);
             Debug.Log("Adding newKnot");
-            //if(_splineContainer.Splines[i].Last().TangentOut)
+            if (_splineContainer.Splines[i].Count > 0)
+            {
+                float3 lastTangent = _splineContainer.Splines[i].Last().TangentOut;
+                if (math.dot(tangent, lastTangent) < 0)
+                {
+                    Debug.Log($"new: {tangent}, old: {lastTangent}");
+                    tangent *= -1;
+                }
+            }
             BezierKnot newKnot = new BezierKnot
             {
                 Position = new float3(_visualizer._fieldPositions[_fieldPositionIndex[i]], 0),
-                TangentOut = new float3(_visualizer._fieldDirections[_fieldPositionIndex[i]].xy,0),
+                TangentOut = tangent,
             };
             _splineContainer.Splines[i].Add(newKnot);
         }
@@ -94,7 +103,7 @@ public class RoadGenerator : MonoBehaviour
     {
         float2 position = _visualizer._fieldPositions[_fieldPositionIndex[index]];
         float2 tangentOut =_visualizer._fieldDirections[_fieldPositionIndex[index]].xy;
-
+        
         position += tangentOut * (_visualizer.resolution * Random.Range(1, 4));
 
         int newIndex = -1;

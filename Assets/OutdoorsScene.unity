@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
+  m_IndirectSpecularColor: {r: 2184.095, g: 2344.0295, b: 3564.856, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -436,6 +436,7 @@ MonoBehaviour:
   currentItteration: 0
   maxItterations: 20
   seed: 5
+  maxAngle: 0.3
 --- !u!114 &531942635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -526,24 +527,24 @@ MonoBehaviour:
   fieldTypes:
   - type: 1
     center:
-      x: 571.7968
-      y: 554.59375
+      x: 1203.2214
+      y: 1036.4705
     fallOff: 3
     multiplier: 0.23
     radius: 75
     dimensions:
-      x: 1197.803
-      y: 1165.9395
+      x: 2917.605
+      y: 2237.6997
     rotation:
       x: -0.82
       y: -0.13
   - type: 2
     center:
-      x: 84.514175
-      y: 973.80896
+      x: 1704.6173
+      y: 1193.9768
     fallOff: 1.55
     multiplier: 1
-    radius: 603.6721
+    radius: 923.5386
     dimensions:
       x: 5
       y: 5
@@ -552,8 +553,8 @@ MonoBehaviour:
       y: 0.6
   - type: 1
     center:
-      x: 656.40564
-      y: 472.20444
+      x: 685.48444
+      y: 949.9271
     fallOff: 1.62
     multiplier: 0.2
     radius: 230
@@ -565,11 +566,11 @@ MonoBehaviour:
       y: 0.6
   - type: 2
     center:
-      x: 808.04004
-      y: 743.9938
+      x: 583.718
+      y: 1545.737
     fallOff: 3
     multiplier: 1
-    radius: 125.882416
+    radius: 508.06055
     dimensions:
       x: 250
       y: 200
@@ -578,11 +579,11 @@ MonoBehaviour:
       y: 0.6
   - type: 2
     center:
-      x: 897.2494
-      y: 321.88077
+      x: 743.5473
+      y: 180.64102
     fallOff: 0.73
     multiplier: 1
-    radius: 241.20197
+    radius: 561.06854
     dimensions:
       x: 250
       y: 200
@@ -591,33 +592,33 @@ MonoBehaviour:
       y: 0.6
   - type: 1
     center:
-      x: 889.5326
-      y: 635.30707
+      x: 1504.3411
+      y: 248.97481
     fallOff: 3
     multiplier: 1
     radius: 75
     dimensions:
-      x: 280.50757
-      y: 234.8081
+      x: 646.06934
+      y: 268.041
     rotation:
       x: 0.5
       y: 0.2
   - type: 1
     center:
-      x: 191.0593
-      y: 429.8689
+      x: 149.51819
+      y: 683.26965
     fallOff: 3
     multiplier: 1
     radius: 75
     dimensions:
-      x: 357.0972
-      y: 542.11786
+      x: 598.0356
+      y: 974.14526
     rotation:
       x: 1
       y: 0.2
   dimensions:
-    x: 1140.2538
-    y: 1097.8516
+    x: 2236.322
+    y: 1870.5793
   resolution: 4
   generationCompleted:
     m_PersistentCalls:

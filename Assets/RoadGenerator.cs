@@ -22,10 +22,21 @@ public class RoadGenerator : MonoBehaviour
     
     [SerializeField]
     private int seed;
+
+    [SerializeField] private float maxAngle;
+
     private void OnEnable()
     {
         _visualizer = FindAnyObjectByType<FieldVisualizer>();
         _splineContainer = GetComponent<SplineContainer>();
+        roadComplete = true;
+    }
+
+    private void OnValidate()
+    {
+        if (_visualizer == null || _splineContainer == null)
+            return;
+        RecalculateNetwork();
     }
 
     public void RecalculateNetwork()
@@ -38,8 +49,13 @@ public class RoadGenerator : MonoBehaviour
         if (_fieldPositionIndex.IsCreated)
             _fieldPositionIndex.Dispose();
 
-        _fieldPositionIndex = new NativeArray<int>(5, Allocator.Persistent);
-        for (int i = 0; i < _fieldPositionIndex.Length; i++)
+        _fieldPositionIndex = new NativeArray<int>(2, Allocator.Persistent);
+        foreach (var VARIABLE in _splineContainer.Splines)
+        {
+            _splineContainer.RemoveSpline(VARIABLE);
+        }
+        
+        for (int i = _fieldPositionIndex.Length - 1; i >= 0; i--)
         {
             Debug.Log("Adding SPline");
             _splineContainer.AddSpline();
@@ -64,45 +80,52 @@ public class RoadGenerator : MonoBehaviour
         {
             roadComplete = true;
             MergeSplines();
+            return;
         }
         
         // Generate directions for those points.
-        // Add points to spline
+        // Add points to splines
         for (int i = 0; i < _fieldPositionIndex.Length; i++)
         {
+            // Grab new tangent
             float3 tangent = new float3(_visualizer._fieldDirections[_fieldPositionIndex[i]].xy,0);
-            Debug.Log("Adding newKnot");
-            if (_splineContainer.Splines[i].Count > 0)
+            float3 position = new float3(_visualizer._fieldPositions[_fieldPositionIndex[i]], 0);
+            // if dot product of last point was less then 0 flip tangents
+            if (_splineContainer.Splines[i].Count <= 0)
             {
-                float3 lastTangent = _splineContainer.Splines[i].Last().TangentOut;
-                if (math.dot(tangent, lastTangent) < 0)
-                {
-                    Debug.Log($"new: {tangent}, old: {lastTangent}");
-                    tangent *= -1;
-                }
+                _splineContainer.Splines[i].Add(AddNewKnot(position, tangent * -1, tangent));
+                continue;
             }
-            BezierKnot newKnot = new BezierKnot
-            {
-                Position = new float3(_visualizer._fieldPositions[_fieldPositionIndex[i]], 0),
-                TangentOut = tangent,
-            };
-            _splineContainer.Splines[i].Add(newKnot);
+            if(math.dot(tangent, _splineContainer.Splines[i].Last().TangentOut) < 0)
+                _splineContainer.Splines[i].Add(AddNewKnot(position, tangent, tangent *-1));
+            else
+                _splineContainer.Splines[i].Add(AddNewKnot(position, tangent * -1, tangent));
         }
         
         // Add random chance to split
         // Move positions some random amount in range in the direction.
         for (int i = 0; i < _fieldPositionIndex.Length; i++)
         {
-            _fieldPositionIndex[i] = FindNextIndex(i);
+            _fieldPositionIndex[i] = FindNextIndex(i, _splineContainer.Splines[i].Last().TangentOut);
         }
 
         // Pick points were the center is close to the collision if you draw vector lines in the in/out direction.
     }
 
-    private int FindNextIndex(int index)
+    private BezierKnot AddNewKnot(float3 position, float3 tangentIn, float3 tangentOut)
+    {
+        BezierKnot knot = new BezierKnot();
+        knot.Position = position;
+        knot.TangentIn = tangentIn;
+        knot.TangentOut = tangentOut;
+        
+        return knot;
+    }
+
+    private int FindNextIndex(int index, float3 tangent)
     {
         float2 position = _visualizer._fieldPositions[_fieldPositionIndex[index]];
-        float2 tangentOut =_visualizer._fieldDirections[_fieldPositionIndex[index]].xy;
+        float2 tangentOut = tangent.xy;
         
         position += tangentOut * (_visualizer.resolution * Random.Range(1, 4));
 
